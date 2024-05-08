@@ -12,6 +12,7 @@
             </div>
             <div class="mt-[30px]">
                 <h1 class="text-3xl text-black"> {{ $produto->nome}}</h1>
+                {{-- <p class="btn-holder"><a href="{{ route('addCarrinho', $produto->id)}}" class="btn btn-outlne-danger">Adicionar ao Carrinho</a></p> --}}
             </div>
         </div>
     </div>

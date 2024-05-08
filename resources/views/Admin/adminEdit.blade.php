@@ -1,78 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.adminLayout')
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@section('title', 'Página Administrativa')
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+@section('content')
 
-    <!-- Fonte do Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-
-    <!-- Fonte Roboto -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto" rel="stylesheet">
-
-    <!-- Fonte Figtree -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet">
-
-    @vite('resources/css/app.css')
-</head>
-
-<body class="font-figtree">
-    <center>
-        <div id="event-create-container" class="col-md-6 offset-md3">
-            <h1>Editar {{ $produto->nome}}</h1>
-            <form action="/admin/update/{{$produto->id}}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="form-group"> 
-                    <label for="imagem">Imagem do {{ $produto->nome}}</label> 
-                    <input type="file" id="imagem" name="imagem" class="from-control-file">
-                    <img src="{{ asset('img/games/'.$produto->imagem) }}" alt=" {{ $produto->nome}} " class="img-preview">
+    <div class="container mx-auto mt-8">
+        <a href="/admin/home"
+            class="w-full col-span-2 px-4 py-2 mt-4 text-white bg-gray-500 rounded-md lg:col-span-3 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">Voltar
+        </a>
+        <h1 class="mb-8 text-3xl font-bold text-center">Editar {{ $produto->nome }}</h1>
+        <form action="/admin/update/{{ $produto->id }}" method="POST" enctype="multipart/form-data"
+            class="grid grid-cols-1 gap-6 p-8 mx-auto bg-white rounded-lg shadow-md md:grid-cols-2 lg:grid-cols-3 max-w-7xl">
+            @csrf
+            @method('PUT')
+            <div class="mb-6 col-span-full">
+                <label for="imagem" class="block mb-2 text-sm font-semibold">Imagem do {{ $produto->nome }}</label>
+                <div class="relative">
+                    <img src="{{ asset('img/games/' . $produto->imagem) }}" alt="{{ $produto->nome }}"
+                        class="w-full mt-2 rounded-lg shadow-md">
+                    <label for="nova_imagem"
+                        class="absolute bottom-0 left-0 w-full px-4 py-2 text-sm font-semibold leading-none text-white transition-opacity bg-blue-500 opacity-0 cursor-pointer select-none rounded-b-md hover:opacity-100">
+                        Escolher nova imagem
+                        <input type="file" id="nova_imagem" name="nova_imagem" class="hidden">
+                    </label>
                 </div>
-                <div class="form-group"> 
-                    <label for="nome">Nome:</label> 
-                    <input type="text" class="form-control" id="nome" name="nome" placeholder="Nome..." value=" {{$produto->nome}} ">
-                </div>
-                <div class="form-group">
-                    <label for="tipo_vinho">Tipo do vinho:</label> 
-                    <select name="tipo_vinho" id="tipo_vinho" class="form-control">
-                        <option value="0">Arinto</option>
-                        <option value="1" {{ $produto->tipo_vinho == 1 ? "selected='selected'": ""}}>Loureiro</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="preco">Preço:</label>
-                    <input type="number" class="form-control" id="preco" name="preco" placeholder="Preço..." value="{{ $produto->preco}}">
-                </div>
-                <div class="form-group">
-                    <label for="descricao">Descrição:</label> 
-                    <textarea name="descricao" id="descricao" class="form-control" placeholder="Descrição..." >{{ $produto->descricao}}</textarea>
-                </div>
-                <div class="form-group">
-                    <label for="qnt_stock">Quantidade em stock:</label>
-                    <input type="number" class="form-control" id="qnt_stock" name="qnt_stock" placeholder="Preço..." value="{{ $produto->qnt_stock}}">
-                </div>
-                <div class="form-group">
-                    <label for="ispack">É em pack?</label> 
-                    <select name="ispack" id="ispack" class="form-control">
-                        <option value="0">Não</option>
-                        <option value="1" {{ $produto->ispack == 1 ? "selected='selected'": ""}}>sim</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="ano_colheita">Ano de colheita:</label>
-                    <input type="number" class="form-control" id="ano_colheita" name="ano_colheita" placeholder="Preço..." value="{{ $produto->ano_colheita}}">
-                </div>
-                <input type="submit" class="btn btn-primary" value="Atualizar">
-            </form>
-        </div>
-    </center>
+            </div>
+
+            <div class="mb-6">
+                <label for="nome" class="block mb-2 text-sm font-semibold">Nome:</label>
+                <input type="text" class="w-full px-3 py-2 text-sm border rounded-md" id="nome" name="nome"
+                    placeholder="Nome..." value="{{ $produto->nome }}">
+            </div>
+
+            <div class="mb-6">
+                <label for="tipo_vinho" class="block mb-2 text-sm font-semibold">Tipo do vinho:</label>
+                <select name="tipo_vinho" id="tipo_vinho" class="w-full px-3 py-2 text-sm border rounded-md">
+                    <option value="" disabled selected>Selecione o tipo do vinho</option>
+                    <option value="0">Arinto</option>
+                    <option value="1" {{ $produto->tipo_vinho == 1 ? "selected='selected'" : '' }}>Loureiro</option>
+                </select>
+            </div>
 
 
-</body>
+            <div class="mb-6">
+                <label for="preco" class="block mb-2 text-sm font-semibold">Preço:</label>
+                <input type="number" class="w-full px-3 py-2 text-sm border rounded-md" id="preco" name="preco"
+                    placeholder="Preço..." value="{{ $produto->preco }}">
+            </div>
 
-</html>
+            <div class="mb-6">
+                <label for="descricao" class="block mb-2 text-sm font-semibold">Descrição:</label>
+                <textarea name="descricao" id="descricao" class="w-full px-3 py-2 text-sm border rounded-md" placeholder="Descrição...">{{ $produto->descricao }}</textarea>
+            </div>
+
+            <div class="mb-6">
+                <label for="qnt_stock" class="block mb-2 text-sm font-semibold">Quantidade em stock:</label>
+                <input type="number" class="w-full px-3 py-2 text-sm border rounded-md" id="qnt_stock" name="qnt_stock"
+                    placeholder="Quantidade..." value="{{ $produto->qnt_stock }}">
+            </div>
+
+            <div class="mb-6">
+                <label for="ispack" class="block mb-2 text-sm font-semibold">É em pack?</label>
+                <select name="ispack" id="ispack" class="w-full px-3 py-2 text-sm border rounded-md">
+                    <option value="0">Não</option>
+                    <option value="1" {{ $produto->ispack == 1 ? "selected='selected'" : '' }}>Sim</option>
+                </select>
+            </div>
+
+            <div class="mb-6">
+                <label for="ano_colheita" class="block mb-2 text-sm font-semibold">Ano de colheita:</label>
+                <input type="number" class="w-full px-3 py-2 text-sm border rounded-md" id="ano_colheita"
+                    name="ano_colheita" placeholder="Ano..." value="{{ $produto->ano_colheita }}">
+                @error('ano_colheita')
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <button type="submit"
+                class="w-full col-span-2 px-4 py-2 text-white bg-blue-500 rounded-md lg:col-span-3 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Atualizar
+            </button>
+        </form>
+    </div>
+
+@endsection

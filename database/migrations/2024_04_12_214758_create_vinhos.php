@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id('id');
             $table->string('nome');
             $table->tinyInteger('tipo_vinho');
-            // 0 = nigga
-            // 1 = macaco preto nigga monky ass nigger
+            // 0 = arinto
+            // 1 = loureiro
             $table->integer('preco');
             $table->text('descricao');
             $table->integer('qnt_stock');

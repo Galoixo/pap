@@ -23,44 +23,52 @@ class vinhosController extends Controller
         return view('client.vinhos', ["produto" => $produto, "search"=>$search]);
     }
 
-    public function create()
-    {
-        return view('client.createproduto');
-    }
+    // public function create()
+    // {
+    //     return view('client.createproduto');
+    // }
 
     public function store(Request $request)
+    
     {
-        $produto = new Produto;
-    
-        $produto->nome = $request->nome;
-        $produto->tipo_vinho = $request->tipo_vinho;
-        $produto->preco = $request->preco;
-        $produto->descricao = $request->descricao;
-        $produto->qnt_stock = $request->qnt_stock;
-        $produto->ispack = $request->ispack;
-        $produto->ano_colheita = $request->ano_colheita;
-    
-        // Upload da imagem
-        if ($request->hasFile('imagem') && $request->file('imagem')->isValid()) {
+        try {
+            $request->validate([
+                'nome' => 'required|string|max:255',
+                'tipo_vinho' => 'required|string|max:255',
+                'preco' => 'required|numeric',
+                'descricao' => 'required|string',
+                'qnt_stock' => 'required|integer|min:0',
+                'ispack' => 'required|boolean',
+                'ano_colheita' => 'required|nullable|integer|min:1900|max:' . date('Y'),
+                'imagem' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
 
-            $requestImage = $request->file('imagem');
+            $produto = new Produto;
 
-            $extension = $requestImage->extension();
+            $produto->nome = $request->nome;
+            $produto->tipo_vinho = $request->tipo_vinho;
+            $produto->preco = $request->preco;
+            $produto->descricao = $request->descricao;
+            $produto->qnt_stock = $request->qnt_stock;
+            $produto->ispack = $request->ispack;
+            $produto->ano_colheita = $request->ano_colheita;
 
-            $imageName = md5($requestImage->getClientOriginalName() . strtotime('now')) . '.' . $extension;
+            if ($request->hasFile('imagem') && $request->file('imagem')->isValid()) {
+                $requestImage = $request->file('imagem');
+                $extension = $requestImage->extension();
+                $imageName = md5($requestImage->getClientOriginalName() . '_' . time()) . '.' . $extension;
+                $requestImage->move(public_path('img/products'), $imageName);
+                $produto->imagem = $imageName;
+            }
 
-            $requestImage->move(public_path('img/products'), $imageName);
+            $produto->save();
 
-            $produto->imagem = $imageName;
+            return redirect()->route('admin.home')->with('msg', 'Vinho adicionado com sucesso!');
+        } catch (\Exception $e) {
+            echo "<strong> erro no ficheiro </strong>" . $e->getFile() . "<strong> <br> na linha </strong>" . $e->getLine();
         }
-        
-        // $user = auth()->user();
-        // $produto->id = $user->id;
-
-        $produto->save();
-    
-        return redirect('/vinhos')->with('msg', 'Vinho adicionado com sucesso!');
     }
+
 
     public function show($id) 
     {
@@ -99,46 +107,25 @@ class vinhosController extends Controller
     //     return view('client.vinhos', ["produto" => $produto, 'search' => $search]);
     // }
 
-    public function dashboard()
-    {
-        $produto = produto::all();
 
-        return view('Admin.adminHome', ['produto'=>$produto]);
-    }
+    public function filter(Request $request)
+    {
+        $tipo_vinho = $request->input('tipo_vinho', []);
     
-    public function edit($id)
-    {
-        $produto = produto::findOrFail($id);
-
-        return view('Admin.adminEdit', ['produto'=>$produto]);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $data = $request->all();
-
-        if ($request->hasFile('imagem') && $request->file('imagem')->isValid()) {
-
-            $requestImage = $request->file('imagem');
-
-            $extension = $requestImage->extension();
-
-            $imageName = md5($requestImage->getClientOriginalName() . strtotime('now')) . '.' . $extension;
-
-            $requestImage->move(public_path('img/games'), $imageName);
-
-            $data['imagem'] = $imageName;
+        // Lógica de filtragem com base nas opções selecionadas
+        $query = Produto::query();
+        if (!empty($tipo_vinho)) {
+            $query->whereIn('tipo_vinho', $tipo_vinho);
         }
-
-        produto::findOrFail($id)->update($data);
+        $produto = $query->get();
     
-        return redirect('/admin/home')->with('msg', 'Sucesso!');
+        return view('client.vinhos', compact('produto'));
     }
 
-    public function destroy($id)
-    {
-        produto::findOrFail($id)->delete();
 
-        return redirect('/admin/home')->with('msg', 'Sucesso!');
-    }
+    
+    
+
+
 }
+

@@ -17,7 +17,7 @@ class authController extends Controller
             $userType = Auth()->user()->userType;
 
             if($userType == "user"){
-                return view('dashboard');
+                return view('client.vinhos');
             }
 
             else if($userType == "admin"){
@@ -28,6 +28,8 @@ class authController extends Controller
             }
 
         }
+
+
     
     }
 }

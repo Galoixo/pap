@@ -25,26 +25,32 @@
     <header class="static flex items-center justify-between py-4 mx-auto border-b max-w-7xl">
         <div>
             <a href="/" class="text-[#E0CD67] text-3xl">Vinhos do Galo</a>
+            <!-- Ícone do carrinho -->
         </div>
         <div class="text-center">
-            <ul class="flex space-x-4">
+            <ul class="flex space-x-6 text-lg"> <!-- Ajuste o valor de space-x-6 conforme necessário -->
                 <li>
-                    <a href="/" class="text-base text-black hover:text-[#E0CD67]">Home</a>
+                    <a href="/" class="text-black hover:text-[#E0CD67]">Home</a>
                 </li>
                 <li>
-                    <a href="#" class="text-base text-black">Sobre nós</a>
+                    <a href="#" class="text-black hover:text-[#E0CD67]">Sobre nós</a>
                 </li>
                 <li>
-                    <a href="/vinhos" class="text-base text-black">Vinhos</a>
+                    <a href="/vinhos" class="text-black hover:text-[#E0CD67]">Vinhos</a>
                 </li>
                 <li>
-                    <a href="#" class="text-base text-black">Promoções</a>
+                    <a href="#" class="text-black hover:text-[#E0CD67]">Promoções</a>
+                </li>
+                <li>
+                    <a href="{{ route('carrinho')}}" class="text-black hover:text-[#E0CD67] flex items-center">
+                        <img src="{{ asset('imgs/126510.png')}}" alt="Carrinho de Compras" class="w-6 h-6 mr-1">
+                        <span class="text-black badge bd-danger">{{ count((array) session('carrinho')) }}</span>
+                    </a>
                 </li>
             </ul>
-        </div>
+        </div>      
         <div>
             @auth
-                <a href="/adicionar-produto" class="text-lg hover:text-[#AE1442]">Adicionar Produto</a>
                 <form action="/logout" method="POST" class="inline">
                     @csrf
                     <button type="submit" class="text-lg hover:text-[#AE1442]">Logout</button>
